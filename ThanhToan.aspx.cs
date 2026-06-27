@@ -1,127 +1,68 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 
-namespace banquat
+namespace BTL
 {
     public partial class ThanhToan : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (IsPostBack)
+            if (!IsPostBack)
             {
-                XuLyThanhToan();
-            }
-            else
-            {
-                HienThiDonHang();
+                // Kiểm tra giỏ hàng
+                List<int> gioHang = Session["GioHang"] as List<int>;
+                if (gioHang == null || gioHang.Count == 0)
+                {
+                    lblThongBao.InnerText = "Giỏ hàng của bạn đang trống!";
+                    btnDatHang.Enabled = false;
+                }
             }
         }
-        void HienThiDonHang()
+
+        protected void btnDatHang_Click(object sender, EventArgs e)
         {
-            List<int> gioHang = (List<int>)Session["GioHang"];
-            List<SanPham> dsSP = (List<SanPham>)Application["DSSanPham"];
+            // Lấy dữ liệu từ Session và Application
+            List<int> gioHang = Session["GioHang"] as List<int>;
+            var dsSP = (List<SanPham>)Application["DSSanPham"];
+            List<DonHang> dsDH = Application["DanhSachDonHang"] as List<DonHang> ?? new List<DonHang>();
 
-            string html = "";
+            if (gioHang == null || dsSP == null) return;
+
+            // 1. Tính tổng tiền
             int tongTien = 0;
-            int stt = 1;
-            html += "<table border='1' cellpadding='10'>";
-            html += "<tr>";
-            html += "<th>STT</th>";
-            html += "<th>Hình ảnh</th>";
-            html += "<th>Tên sản phẩm</th>";
-            html += "<th>Giá</th>";
-            html += "</tr>";
-
-            foreach (int maSP in gioHang)
+            foreach (int ma in gioHang)
             {
-                SanPham spTimThay = null;
-
-                foreach (SanPham sp in dsSP)
-                {
-                    if (sp.MaSP == maSP)
-                    {
-                        spTimThay = sp;
-                        break;
-                    }
-                }
-
-                if (spTimThay != null)
-                {
-                    html += "<tr>";
-                    html += "<td>" + stt + "</td>";
-                    html += "<td><img src='" + spTimThay.HinhAnh + "' width='100' /></td>";
-                    html += "<td>" + spTimThay.TenSP + "</td>";
-                    html += "<td>" + spTimThay.Gia + " đ</td>";
-                    html += "</tr>";
-
-                    tongTien += spTimThay.Gia;
-                    stt++;
-                }
+                var sp = dsSP.FirstOrDefault(s => s.MaSP == ma);
+                if (sp != null) tongTien += sp.Gia;
             }
 
-            html += "</table>";
-            html += "<h3>Tổng tiền: " + tongTien + " đ</h3>";
-
-            noiDungDonHang.InnerHtml = html;
-        }
-        void XuLyThanhToan()
-        {
-            string tenKhachHang = Request.Form["tenKhachHang"];
-            string soDienThoai = Request.Form["soDienThoai"];
-            string diaChi = Request.Form["diaChi"];
-
-            if (tenKhachHang == "" || soDienThoai == "" || diaChi == "")
+            // 2. Giảm giá theo gói thành viên
+            ThanhVien user = (ThanhVien)Session["User"];
+            if (user != null)
             {
-                lblThongBao.InnerText = "Vui lòng nhập đầy đủ thông tin nhận hàng.";
-                HienThiDonHang();
-                return;
+                if (user.LoaiThanhVien == "Vàng") tongTien = (int)(tongTien * 0.9);
+                else if (user.LoaiThanhVien == "Bạc") tongTien = (int)(tongTien * 0.95);
             }
 
-            List<int> gioHang = (List<int>)Session["GioHang"];
-            List<SanPham> dsSP = (List<SanPham>)Application["DSSanPham"];
-
-            int tongTien = 0;
-
-            foreach (int maSP in gioHang)
+            // 3. Tạo đơn hàng
+            DonHang dhMoi = new DonHang
             {
-                foreach (SanPham sp in dsSP)
-                {
-                    if (sp.MaSP == maSP)
-                    {
-                        tongTien += sp.Gia;
-                        break;
-                    }
-                }
-            }
+                MaDonHang = dsDH.Count + 1,
+                TenKhachHang = txtTen.Text,
+                SoDienThoai = txtSDT.Text,
+                DiaChi = txtDiaChi.Text,
+                NgayDat = DateTime.Now,
+                TongTien = tongTien,
+                DanhSachMaSP = gioHang
+            };
+            dsDH.Add(dhMoi);
+            Application["DanhSachDonHang"] = dsDH;
 
-            if (Application["DSDonHang"] == null)
-            {
-                Application["DSDonHang"] = new List<DonHang>();
-            }
-
-            List<DonHang> dsDonHang = (List<DonHang>)Application["DSDonHang"];
-
-            DonHang dh = new DonHang();
-
-            dh.MaDonHang = dsDonHang.Count + 1;
-            dh.TenKhachHang = tenKhachHang;
-            dh.SoDienThoai = soDienThoai;
-            dh.DiaChi = diaChi;
-            dh.NgayDat = DateTime.Now;
-            dh.TongTien = tongTien;
-            dh.DanhSachMaSP = gioHang;
-
-            dsDonHang.Add(dh);
-
-            Application["DSDonHang"] = dsDonHang;
-
-            Session.Remove("GioHang");
-
-            Response.Write("<script>alert('Đặt hàng thành công.'); window.location='TrangChu.aspx';</script>");
+            // 5. Kết thúc
+            Session["GioHang"] = null;
+            lblThongBao.InnerText = "Đặt hàng thành công! Tổng tiền sau giảm giá: " + tongTien.ToString("N0") + " VNĐ";
+            btnDatHang.Enabled = false;
         }
     }
 }

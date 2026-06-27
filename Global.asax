@@ -1,1 +1,1 @@
-﻿<%@ Application Codebehind="Global.asax.cs" Inherits="banquat.Global" Language="C#" %>
+﻿<%@ Application Codebehind="Global.asax.cs" Inherits="BTL.Global" Language="C#" %>

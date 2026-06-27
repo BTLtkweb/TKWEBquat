@@ -7,11 +7,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace banquat
+namespace BTL
 {
 
 
-    public partial class DangNhap
+    public partial class WebForm1
     {
 
         /// <summary>
@@ -30,6 +30,6 @@ namespace banquat
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl lblThongBao;
+        protected global::System.Web.UI.WebControls.Label lblThongBao;
     }
 }

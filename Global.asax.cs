@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.Security;
 using System.Web.SessionState;
 
-namespace banquat
+namespace BTL
 {
     public class Global : System.Web.HttpApplication
     {
@@ -31,12 +31,12 @@ namespace banquat
 
             SanPham sp1 = new SanPham();
             sp1.MaSP = 1;
-            sp1.TenSP = "Quạt đứng Senko";
-            sp1.Hang = "Senko";
+            sp1.TenSP = "Quạt đứng Fugio";
+            sp1.Hang = "Fugio";
             sp1.Loai = "Quạt đứng";
             sp1.Gia = 450000;
             sp1.MoTa = "Quạt đứng 3 tốc độ, chạy êm, phù hợp gia đình.";
-            sp1.HinhAnh = "images/quat1.png";
+            sp1.HinhAnh = "./images/quat1.jpg";
 
             dsSP.Add(sp1);
 
@@ -47,7 +47,7 @@ namespace banquat
             sp2.Loai = "Quạt hơi nước";
             sp2.Gia = 2390000;
             sp2.MoTa = "Quạt hơi nước làm mát nhanh, có điều khiển từ xa.";
-            sp2.HinhAnh = "images/quat2.png";
+            sp2.HinhAnh = "./images/quat2.png";
 
             dsSP.Add(sp2);
 
