@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="TrangChu.aspx.cs" Inherits="banquat.TrangChu" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Trangchu.aspx.cs" Inherits="BTL.WebForm2" %>
 
 <!DOCTYPE html>
 
@@ -17,25 +17,24 @@
     </style>
 </head>
 <body>
-    <form id="form1" runat="server">
+    <form id="tc" runat="server">
         <div id="lblXinChao" runat="server"></div>
         <div>
             <h2>Thanh điều hướng</h2>
             <a href="TrangChu.aspx">
-                <img src="images/logo.png" alt="Logo website bán quạt" width="120" />
+                <img src="./images/logo.jpg" alt="Logo website bán quạt" width="120" />
             </a>
             <ul>
                 <li><a href="DanhSachSanPham.aspx">Danh sách sản phẩm</a></li>
                 <li><a href="GioHang.aspx">Giỏ hàng</a></li>
                 <li><a href="ThanhVien.aspx">Trang thành viên</a></li>
-                <li><a href="TimKiem.aspx">Tìm kiếm và lọc sản phẩm</a></li>
                 <li><a href="BaoCaoThongKe.aspx">Báo cáo thống kê</a></li>
                 <li><a href="QuanLySanPham.aspx">Quản lý danh sách sản phẩm</a></li>
             </ul>
         </div>
         <a href="ChiTietSanPham.aspx?id=1">
         <img src="images/quat1.png" alt="Chi tiết sản phẩm quạt" width="120" />
-    </a>
+        </a>
     </form>
 </body>
 </html>

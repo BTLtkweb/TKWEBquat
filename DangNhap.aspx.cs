@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data.SqlClient;
+using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace banquat
+namespace BTL
 {
-    public partial class DangNhap : System.Web.UI.Page
+    public partial class WebForm1 : System.Web.UI.Page
     {
-
         protected void Page_Load(object sender, EventArgs e)
         {
             if (IsPostBack)
@@ -18,7 +20,7 @@ namespace banquat
 
                 if (tenDangNhap == "" || matKhau == "")
                 {
-                    lblThongBao.InnerText = "Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.";
+                    lblThongBao.Text = "Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.";
                     return;
                 }
 
@@ -44,9 +46,10 @@ namespace banquat
                 }
                 else
                 {
-                    lblThongBao.InnerText = "Tên đăng nhập hoặc mật khẩu không đúng.";
+                    lblThongBao.Text = "Tên đăng nhập hoặc mật khẩu không đúng.";
                 }
             }
+
         }
     }
 }
